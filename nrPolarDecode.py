@@ -1,6 +1,7 @@
 import numpy as np
-from TAF.ecc.polar.utils import *
-from TAF.ecc.polar.nrCRC import nrCRCDecode
+
+from utils import *
+from nrCRC import nrCRCDecode
 
 
 def nrPolarDecode(inp, K, E, L, *varargin):
@@ -601,4 +602,3 @@ def polarBitReverse(b, n):
     bin_str = np.binary_repr(b, width=n)
     rev_str = bin_str[::-1]
     return int(rev_str, 2)
-

@@ -1,7 +1,8 @@
 import numpy as np
-from TAF.ecc.polar.nrCRC import nrCRCEncode, nrCRCDecode
-from TAF.ecc.polar.nrPolarEncode import nrPolarEncode
-from TAF.ecc.polar.nrPolarDecode import nrPolarDecode
+
+from nrCRC import nrCRCEncode, nrCRCDecode
+from nrPolarEncode import nrPolarEncode
+from nrPolarDecode import nrPolarDecode
 
 # ========================================================================
 #  The following are local functions used in this script
@@ -244,4 +245,3 @@ print('\n=== Simulation ended ===\n')
 print('{:<16} {:>10} {:>10}'.format('Channel', 'BER', 'FER'))
 for i in range(numCh):
     print('{:<16} {:>10.4g} {:>10.4g}'.format(channelTypes[i], resultsBER[i], resultsFER[i]))
-

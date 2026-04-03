@@ -1,5 +1,6 @@
 import numpy as np
-from TAF.ecc.polar.utils import *
+
+from utils import *
 
 def nrPolarEncode(inp, E, *varargin):
     # nrPolarEncode Polar encoding
@@ -165,5 +166,4 @@ def validateInputs(inp, E, nMax, iIL):
     # to 8192 and greater than K+nPC
     if not (isinstance(E, int) and E > K + nPC and E <= 8192):
         raise ValueError(f'{fcnName}: E must be an integer > K+nPC and <= 8192')
-
 
