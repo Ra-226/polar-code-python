@@ -93,3 +93,32 @@ for L in L_list:
     results_L_fer.append(fer)
 
     print('L=%2d: Decoded BER=%.4f, FER=%.4f' % (L, ber, fer))
+
+# Plot results
+fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 5))
+
+# Plot 1: Channel BER vs Performance
+ax1.plot(ber_list, results_ber, 'bo-', label='Decoded BER', linewidth=2, markersize=8)
+ax1.plot(ber_list, results_fer, 'rs-', label='FER', linewidth=2, markersize=8)
+ax1.plot(ber_list, ber_list, 'k--', label='Channel BER', linewidth=1)
+ax1.set_xlabel('Channel BER')
+ax1.set_ylabel('Error Rate')
+ax1.set_title('Error Correction vs Channel BER (L=8)')
+ax1.legend()
+ax1.grid(True, alpha=0.3)
+ax1.set_ylim([0, max(max(results_ber), max(results_fer)) * 1.1 + 0.01])
+
+# Plot 2: List Length vs Performance
+ax2.plot(L_list, results_L_ber, 'go-', label='Decoded BER', linewidth=2, markersize=8)
+ax2.plot(L_list, results_L_fer, 'ms-', label='FER', linewidth=2, markersize=8)
+ax2.set_xlabel('List Length L')
+ax2.set_ylabel('Error Rate')
+ax2.set_title('List Length Impact (Channel BER=0.20)')
+ax2.legend()
+ax2.grid(True, alpha=0.3)
+ax2.set_ylim([0, max(max(results_L_ber), max(results_L_fer)) * 1.1 + 0.01])
+
+plt.tight_layout()
+plt.savefig('polar_test_results.png', dpi=150, bbox_inches='tight')
+print('\nPlot saved: polar_test_results.png')
+plt.show()

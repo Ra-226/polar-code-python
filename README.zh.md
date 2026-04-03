@@ -106,7 +106,35 @@ print(dec[:K_info])
 ```bash
 python detailedPerformanceAnalysis.py
 python polarAudioWatermarkSim.py
+python testErrorCorrection.py
 ```
+
+### 4. 纠错性能测试
+
+`testErrorCorrection.py` 脚本展示了 Polar 码的纠错能力：
+
+![Polar 测试结果](polar_test_results.png)
+
+**测试结果 (K=64, CRC=11, E=512, 码率=0.125):**
+
+测试1 - 信道BER影响 (L=8, 20帧):
+- 信道BER 10%: 解码BER 0.00%, FER 0%
+- 信道BER 15%: 解码BER 0.00%, FER 0%
+- 信道BER 20%: 解码BER 0.00%, FER 0%
+- 信道BER 25%: 解码BER 2.19%, FER 5%
+- 信道BER 30%: 解码BER 39.45%, FER 90%
+
+测试2 - 列表长度影响 (信道BER=20%, 20帧):
+- L=1: 解码BER 2.81%, FER 10%
+- L=2: 解码BER 0.00%, FER 0%
+- L=4: 解码BER 0.00%, FER 0%
+- L=8: 解码BER 0.00%, FER 0%
+- L=16: 解码BER 0.00%, FER 0%
+
+主要发现：
+- 带CRC辅助SCL译码的Polar码在20%信道BER以下实现了优秀的纠错能力
+- 列表长度L≥2相比L=1有显著性能提升
+- 在当前码率下，超过25%信道BER后性能快速下降
 
 ## 模块说明
 

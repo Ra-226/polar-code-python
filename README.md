@@ -130,6 +130,8 @@ python testErrorCorrection.py
 
 The `testErrorCorrection.py` script demonstrates Polar code error correction capability:
 
+![Polar Test Results](polar_test_results.png)
+
 **Test Results (K=64, CRC=11, E=512, Rate=0.125):**
 
 Test 1 - Channel BER Impact (L=8, 20 frames):
