@@ -123,7 +123,7 @@ print(f'Polar audio watermark simulation: K={K_info}, CRC={CRClen}, E={E}, R={co
 ber_channel = .25  # 25% BER信道
 channel_capacity = 1 - H(ber_channel)
 print(f'信道容量: C = {channel_capacity}.:4f, 码率 = {codeRate}')
-print('✓ 码率 < 信道容量，理论上可能可靠通信' if codeRate < channel_capacity else '✗ 码率 > 信道容量，可靠通信困难')
+print('码率 < 信道容量，理论上可能可靠通信' if codeRate < channel_capacity else '码率 > 信道容量，可靠通信困难')
 
 # 添加 CRC
 if CRClen == 6:

@@ -242,7 +242,9 @@ def lclPolarDecode(inp, F, L, iIL, crcLen, padCRC, rnti, qPC):
         if crcLen > 0:
             canCW = sttStr['savedCWs'][:, sc - 1]  # N, with frozen bits
             canMsg = canCW[F == 0]         # K bits only (with nPC)
-            canMsg[piInterl] = canMsg      # deinterleave (for k+nPC)
+            # Deinterleave: reverse the interleaving
+            temp = canMsg.copy()
+            canMsg[piInterl] = temp
 
             if len(qPC) > 0:
                 # Extract the info only bits, minus the PC ones
@@ -285,7 +287,9 @@ def lclPolarDecode(inp, F, L, iIL, crcLen, padCRC, rnti, qPC):
     sc, sttStr, arrayPtrLLR, arrayPtrC = getArrayPtrC(sttStr, arrayPtrLLR, arrayPtrC, mplus1, pathIdx1)
     decCW = sttStr['savedCWs'][:, sc - 1]      # N, with frozen bits
     dec = decCW[F == 0]                        # K, info + nPC bits only
-    dec[piInterl] = dec                        # Deinterleave output, K+nPC
+    # Deinterleave: reverse the interleaving
+    temp = dec.copy()
+    dec[piInterl] = temp
 
     return dec
 

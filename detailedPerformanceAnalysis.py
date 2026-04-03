@@ -9,12 +9,6 @@ import math
 rcParams['font.sans-serif'] = ['PingFang HK'] # 或 ['Heiti SC'], ['Songti SC']
 rcParams['axes.unicode_minus'] = False # 解决负号显示问题
 
-# -------------------------------
-# detailedPerformanceAnalysis.py
-# 由 MATLAB 脚本 detailedPerformanceAnalysis.m 如实改写为 Python 实现
-# 注意：此脚本依赖仓库中的 nrCRC.py, nrPolarEncode.py, nrPolarDecode.py
-# -------------------------------
-
 def H(p):
     # 二元熵函数，注意边界
     if p <= 0 or p >= 1:
@@ -28,22 +22,22 @@ def main():
     K_total = K_info + crcLen  # Polar 编码的输入长度
 
     nMax = 9
-    E = 128            # 输出长度
+    E = 256            # 输出长度
     iIL = True
     L = 16             # 列表长度
-    ber_var = 0.25     # 编码后信号在信道上的 BER（10% 示例脚本中使用 0.25）
+    ber_var = 0.2     # 编码后信号在信道上的 BER（10% 示例脚本中使用 0.25）
 
     # 码率计算
     codeRate = K_info / E
-    print('=== 10%% BER信道下的Polar码测试 ===')
+    print('=== %.1f%% BER信道下的Polar码测试 ===' % (ber_var * 100))
     print('列表长度：%d，crcLen：%d' % (L, crcLen))
     print('信息比特: %d, CRC: %d, Polar输入: %d' % (K_info, crcLen, K_total))
     print('码率: %.3f (信息比特/输出长度: %d/%d)' % (codeRate, K_info, E))
-    print('目标: 编码后信号在信道中的BER=%f%%\n' % (ber_var * 100))
+    print('目标: 编码后信号在信道中的BER=%.1f%%\n' % (ber_var * 100))
 
     # 发射端
     print('--- 发射端处理 ---')
-    np.random.seed(42)
+    #np.random.seed(42)
     infoBits = np.random.randint(0, 2, K_info)
     print('1. 生成 %d 个信息比特' % K_info)
 
@@ -132,7 +126,7 @@ def main():
         print('帧错误: 否')
 
     # LLR尺度敏感性测试 - 扩展范围
-    print('\n--- LLR尺度敏感性测试 (10%% BER) ---')
+    print('\n--- LLR尺度敏感性测试 (%.1f%% BER) ---' % (ber_var * 100))
     scales = np.array([0.5, 1.0, 2.0, 3.0, 5.0, 8.0, 12.0])
     ber_scales = np.zeros(len(scales))
 
@@ -152,7 +146,7 @@ def main():
     print('最佳LLR尺度: %.1f, 对应BER: %.4f' % (scales[best_idx], best_ber))
 
     # 不同列表长度性能比较
-    print('\n--- 不同列表长度性能 (10%% BER) ---')
+    print('\n--- 不同列表长度性能 (%.1f%% BER) ---' % (ber_var * 100))
     L_list = [1, 2, 4, 8, 16, 32]
     ber_L = np.zeros(len(L_list))
 
@@ -164,8 +158,8 @@ def main():
         ber_L[i] = np.sum(infoBits != info_L) / K_info
         print('列表长度 L=%2d: BER=%.4f' % (current_L, ber_L[i]))
 
-    # 不同码率在10% BER下的性能
-    print('\n=== 不同码率在10%% BER下的性能 ===')
+    # 不同码率在指定BER下的性能
+    print('\n=== 不同码率在%.1f%% BER下的性能 ===' % (ber_var * 100))
     rates = [0.1, 0.125, 0.15, 0.2, 0.25]
     rate_results = np.zeros((len(rates), 3))  # [码率, E, 解码BER]
 
@@ -183,8 +177,7 @@ def main():
         received_test[error_pos] = 1 - received_test[error_pos]
 
         # 解码
-        # 脚本中使用固定 0.10
-        llr_scale_test = np.log((1 - 0.10) / 0.10)
+        llr_scale_test = np.log((1 - ber_var) / ber_var)
         llr_test = llr_scale_test * (1 - 2 * received_test.astype(float))
         decoded_test = nrPolarDecode(llr_test.astype(float), K_total, E_test, 16, nMax, iIL, crcLen)
         decoded_test = np.asarray(decoded_test).flatten().astype(int)
@@ -242,7 +235,7 @@ def main():
     # plt.show()
 
     # 理论分析
-    print('\n=== 理论分析 (10%%编码后BER) ===')
+    print('\n=== 理论分析 (%.1f%%编码后BER) ===' % (ber_var * 100))
     print('当前配置分析:')
     print('- 编码后BER: %.1f%%' % (ber_channel * 100))
     print('- 码率: %.3f' % codeRate)
@@ -251,9 +244,9 @@ def main():
         print('- 等效原始信道BER: %.1f%%' % ((ber_channel / codeRate) * 100))
         print('信道容量: C = %.4f' % channel_capacity)
         if codeRate < channel_capacity:
-            print('✓ 码率 < 信道容量，理论上可能可靠通信')
+            print('码率 < 信道容量，理论上可能可靠通信')
         else:
-            print('✗ 码率 > 信道容量，可靠通信困难')
+            print('码率 > 信道容量，可靠通信困难')
 
     print('\n优化建议:')
     print('1. 使用较低码率 (<0.15)')
