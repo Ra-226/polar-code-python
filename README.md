@@ -143,6 +143,16 @@ Supported CRC identifiers include:
 - `'24B'`
 - `'24C'`
 
+Important distinction:
+
+- `nrCRCEncode` / `nrCRCDecode` support the full set above.
+- The Polar workflow does not use all of them interchangeably.
+- `nrPolarDecode(..., crcLen)` accepts CRC lengths `6`, `11`, or `24`.
+- In the current Polar decoder implementation, `crcLen=24` maps to the NR
+  downlink CRC polynomial `'24C'`.
+- So `'16'`, `'24A'`, and `'24B'` are available in the standalone CRC utility
+  module, but they are not general `nrPolarDecode` options.
+
 ### `nrPolarEncode.py`
 
 Main entry point:
@@ -153,6 +163,8 @@ Main entry point:
 Typical parameter conventions:
 
 - `inp`: 1D binary NumPy array containing message bits including CRC bits
+- `inp` is expected to already include the CRC bits produced before Polar
+  encoding
 - `E`: rate-matched output length
 - `nMax`: usually `9` or `10`
 - `iIL`: input interleaving flag
@@ -167,9 +179,12 @@ Main entry point:
 Typical parameter conventions:
 
 - `inp`: 1D float array of LLRs
-- `K`: number of message bits including CRC bits
+- `K`: total number of Polar message bits, including appended CRC bits
 - `E`: rate-matched output length
 - `L`: list size for SCL decoding
+
+For example, if the payload has `K_info=64` bits and CRC length is `11`, then
+the Polar encoder/decoder should use `K=75`.
 
 ### `nrRateMatchAndRecoverPolar.py`
 

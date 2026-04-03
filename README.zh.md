@@ -126,6 +126,15 @@ python polarAudioWatermarkSim.py
 - `'24B'`
 - `'24C'`
 
+这里要特别区分：
+
+- `nrCRCEncode` / `nrCRCDecode` 这个独立 CRC 模块支持上面全部标识。
+- 但 Polar 流程并不是把这些 CRC 全都等价支持。
+- `nrPolarDecode(..., crcLen)` 当前只接受 `6`、`11`、`24`。
+- 在当前 Polar 译码实现里，`crcLen=24` 对应的是 `'24C'`。
+- 所以 `'16'`、`'24A'`、`'24B'` 只是在独立 CRC 工具层可用，不是
+  `nrPolarDecode` 的通用参数选项。
+
 ### `nrPolarEncode.py`
 
 主要入口：
@@ -136,6 +145,7 @@ python polarAudioWatermarkSim.py
 常见参数含义：
 
 - `inp`：1D 二进制 NumPy 数组，通常已包含 CRC 比特
+- `inp` 预期就是已经追加完 CRC 之后、送入 Polar 编码器的比特序列
 - `E`：rate-matched 输出长度
 - `nMax`：通常取 `9` 或 `10`
 - `iIL`：输入交织开关
@@ -150,9 +160,12 @@ python polarAudioWatermarkSim.py
 常见参数含义：
 
 - `inp`：1D 浮点 LLR 数组
-- `K`：消息长度，通常包含 CRC 比特
+- `K`：Polar 译码里的总消息长度，包含附加的 CRC 比特
 - `E`：rate-matched 输出长度
 - `L`：SCL 译码列表长度
+
+例如，如果信息比特长度 `K_info=64`，CRC 长度为 `11`，那么 Polar
+编码器/译码器这一层应使用 `K=75`。
 
 ### `nrRateMatchAndRecoverPolar.py`
 
