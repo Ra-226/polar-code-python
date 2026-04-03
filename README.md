@@ -123,7 +123,33 @@ print(dec[:K_info])
 ```bash
 python detailedPerformanceAnalysis.py
 python polarAudioWatermarkSim.py
+python testErrorCorrection.py
 ```
+
+### 4. Error Correction Performance
+
+The `testErrorCorrection.py` script demonstrates Polar code error correction capability:
+
+**Test Results (K=64, CRC=11, E=512, Rate=0.125):**
+
+Test 1 - Channel BER Impact (L=8, 20 frames):
+- Channel BER 10%: Decoded BER 0.00%, FER 0%
+- Channel BER 15%: Decoded BER 0.00%, FER 0%
+- Channel BER 20%: Decoded BER 0.00%, FER 0%
+- Channel BER 25%: Decoded BER 2.19%, FER 5%
+- Channel BER 30%: Decoded BER 39.45%, FER 90%
+
+Test 2 - List Length Impact (Channel BER=20%, 20 frames):
+- L=1: Decoded BER 2.81%, FER 10%
+- L=2: Decoded BER 0.00%, FER 0%
+- L=4: Decoded BER 0.00%, FER 0%
+- L=8: Decoded BER 0.00%, FER 0%
+- L=16: Decoded BER 0.00%, FER 0%
+
+Key findings:
+- Polar codes with CRC-aided SCL decoding achieve excellent error correction up to 20% channel BER
+- List length L≥2 provides significant performance improvement over L=1
+- Performance degrades rapidly beyond 25% channel BER for this code rate
 
 ## Module Notes
 
